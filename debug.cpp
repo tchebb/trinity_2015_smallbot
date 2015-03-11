@@ -4,6 +4,7 @@
 
 #include <Arduino.h>
 #include "serial.h"
+#include "debug.h"
 
 /* debug_loop
  * A main()-like function which provides an interactive prompt to debug the
