@@ -1,0 +1,5 @@
+# .gitignore
+# A list of files for Git to ignore.
+
+# Build directory for Makefile users.
+/build-mega
