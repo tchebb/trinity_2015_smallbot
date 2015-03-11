@@ -1,4 +1,4 @@
-/* trinity_2015.ino
+/* trinity_2015_smallbot.ino
  *
  * Entry point for robot. This file should *not* contain a significant
  * amount of code--the actual logic should be in separate files.
