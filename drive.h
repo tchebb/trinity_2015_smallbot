@@ -12,10 +12,9 @@
 
 class Calibration {
   public:
-  Calibration(int low, int dead_low, int dead_high, int high);
+  Calibration(int low, int dead_low, int midpoint, int dead_high, int high);
 
-  int low, dead_low, dead_high, high;
-  int midpoint() const;
+  int low, dead_low, midpoint, dead_high, high;
 };
 
 class DriveServo {
