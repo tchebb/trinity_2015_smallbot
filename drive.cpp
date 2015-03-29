@@ -543,10 +543,12 @@ void DriveServo::speed(int speed) {
   int raw;
   if (speed > 0) {
     //raw = map(speed, 1, SPEED_RANGE, c->dead_high, c->high);
-    raw = round(c->dead_high + ((mapping[speed] / 100) * (c->high - c->dead_high)));
+    //raw = round(c->dead_high + ((mapping[speed] / 100) * (c->high - c->dead_high)));
+    raw = round(c->dead_high + ((mapping[speed] / 100) * 120));
   } else if (speed < 0) {
     //raw = map(speed, -SPEED_RANGE, -1, c->low, c->dead_low);
-    raw = round(c->dead_low - ((mapping[-speed] / 100) * (c->dead_low - c->low)));
+    //raw = round(c->dead_low - ((mapping[-speed] / 100) * (c->dead_low - c->low)));
+    raw = round(c->dead_low - ((mapping[-speed] / 100) * 120));
   } else {
     raw = c->midpoint;
   }
