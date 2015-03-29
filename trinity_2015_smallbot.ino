@@ -4,22 +4,28 @@
  * amount of code--the actual logic should be in separate files.
  */
 
+// Hack for Arduino IDE
+#include <Servo.h>
+
 #include "robot.h"
 #include "serial.h"
-#include "distance.h"
 #include "debug.h"
+//#include "state_machine.h"
 
+//StateMachine *s;
 void setup () {
   // Initialize serial port
-  serial_init(9600);
+  serial_init(115200);
 
   robot = new Robot();
 
-  // Initialize the distance sensors
-  distance_init();
+  //s = new StateMachine();
+  robot->omni->linear_speed = 400;
+  robot->omni->commit();
 }
 
 void loop () {
-  // We're in debugging mode for the moment.
-  debug_loop();
+  //s.tick();
+  robot->move->tick();
+  delay(20);
 }

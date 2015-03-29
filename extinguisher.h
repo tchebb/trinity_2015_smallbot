@@ -10,7 +10,10 @@
 class Extinguisher {
   public:
   Extinguisher(int pin);
-  void extinguish();
+
+  void begin_continuous();
+  void end_continuous();
+  void extinguish_momentary();
 
   private:
   int pin;

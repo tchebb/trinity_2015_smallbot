@@ -13,7 +13,7 @@ char blocking_read ();
  * Parameters:
  *   rate: The baud rate to communicate at.
  */
-void serial_init (int rate) {
+void serial_init (long rate) {
   Serial.begin(rate);
   Serial.println("Waiting for input");
 }

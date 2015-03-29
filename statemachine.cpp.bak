@@ -1,0 +1,140 @@
+/* statemachine.cpp
+ * State machine for maze solving.
+ */
+
+#include <Arduino.h>
+#include "statemachine.h"
+#include "serial.h"
+#include "robot.h"
+
+#define INITIALIZATION_TIME   5500
+#define CORRIDOR_DELAY        1000
+#define TURN_RIGHT_TIME       500
+
+
+#define FRONT_OBSTACLE_DIST     20    // in cm
+#define MAX_WALL_DIST           50    // in cm
+
+//Line sense & alignment constants
+#define LINESENSING_INVERTED  0     //1 = look for black, 0 = look for white
+
+#if LINESENSING_INVERTED
+  #define LINESENSED            850
+#else
+  #define LINESENSED            45
+#endif
+
+//Fire sensing constants
+#define FIRESENSED            34
+#define FIRECLOSE             480
+#define FIREANGLETHRESH       4
+#define FIRESWEEPTIME         200
+#define FIRESENSE_TRIALS      10
+
+StateMachine::StateMachine() {
+  while (digitalRead(DPIN_BUTTON_START) == HIGH) {
+    delay(10);
+  }
+
+  debug("Started");
+}
+
+void StateMachine::tick() {
+  switch(STATE) {
+    case STARTPUSHED:
+      time = 0;
+      startTime = millis();
+      stateStart = 0;
+      STATE = INITIALIZATION;
+      break;
+
+    case INITIALIZATION:
+      //determine forward direction
+ 
+      if (analogRead(distFrontPin) < FRONT_OBSTACLE_DIST)
+        if (analogRead(distRightPin) < FRONT_OBSTACLE_DIST) {
+          //drive left
+          delay(INITIALIZATION_TIME);
+        }else{
+           //drive back
+           delay(INITIALIZATION_TIME);
+        }
+      if (analogRead(distBackPin) < FRONT_OBSTACLE_DIST)
+        if (analogRead(distLeftPin) < FRONT_OBSTACLE_DIST) {
+          //drive right
+          delay(INITIALIZATION_TIME);
+        }else{
+          //drive front
+          delay(INITIALIZATION_TIME);
+        }
+        STATE = WALLFOLLOW;
+        stateStart = time;
+        debug("Changed state to WALLFOLLOW");
+        
+        break;
+
+    case WALLFOLLOW:
+      //if both sensors < MAX_WALL_DIST
+        //drive forward using both sensors
+      //else if left sensor > MAX_WALL_DIST
+        //drive forward using right sensor
+      //else
+        //delay(CORRIDOR_DELAY)      
+        //stop
+        //drive right
+      #if LINESENSING_INVERTED
+        if (analogRead(linePin) > LINESENSED){
+          //stop
+          //drive forward
+          //delay(200);
+          //stop
+          STATE = INROOM;
+        }
+      #else
+        if (analogRead(linePin) < LINESENSED){
+          //stop
+          //drive forward
+          //delay(200);
+          //stop
+          numRoomsChecked++;
+          STATE = INROOM;
+          debug("Changed state to INROOM");
+        }
+      #endif
+      //if front sensor < FRONT_OBSTACLE_DIST
+        //stop
+        //turn left
+        
+      break;
+
+    case INROOM:
+      //start turning right
+      //while (time < TURN_RIGHT_TIME)
+        //if (analogRead(fireSenseFrontPin) > FIRESENSED or analogRead(fireSenseRightPin) > FIRESENSED or analogRead(fireSenseRightPin) > FIRESENSED or analogRead(fireSenseBackPin) > FIRESENSED)
+          //STATE = FOUNDFIRE;
+          //debug("Switched state to FOUNDFIRE");
+          //break;
+      //drive right
+      //STATE = WALLFOLLOW;
+      //debug("Fire not found.");
+      break;
+      
+    case FOUNDFIRE:
+      while (analogRead(fireSenseFrontPin) < FIRESENSED)
+        //turn right
+      turnToFire();
+      while (analogRead(fireSenseFrontPin) < FIRECLOSE)
+        //drive forward
+
+      // Trigger extinguisher
+      if (analogRead(fireSenseFrontPin) > FIRESENSED){
+        robot->extinguisher->begin_continuous();
+      while (analogRead(fireSenseFrontPin) > FIRESENSED)
+        ;
+      robot->extinguisher->end_continuous();
+
+      STATE = RETURNHOME;
+      debug("Candle extinguished");
+      break;
+  }
+}

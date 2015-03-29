@@ -27,9 +27,9 @@ void OmniDrive::commit() {
   double x = sin(direction_rad);
   double y = cos(direction_rad);
 
-  double raw_left = (-0.5 * x) - (coeff * y);
-  double raw_right = (-0.5 * x) + (coeff * y);
-  double raw_rear = x;
+  double raw_left = (-0.5 * x) - (coeff * y) - angular_speed;
+  double raw_right = (-0.5 * x) + (coeff * y) - angular_speed;
+  double raw_rear = x - angular_speed;
 
   left->speed(raw_left * linear_speed);
   right->speed(raw_right * linear_speed);
