@@ -5,6 +5,10 @@
 #ifndef SERVOMAP_H
 #define SERVOMAP_H
 
-extern const double servo_map[];
+#include <avr/pgmspace.h>
+
+extern const PROGMEM double servo_map[];
+
+double map_entry_at(int index);
 
 #endif

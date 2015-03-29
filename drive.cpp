@@ -40,9 +40,9 @@ void DriveServo::speed(int speed) {
 
   int raw;
   if (speed > 0) {
-    raw = round(c->dead_high + (servo_map[speed] * SERVO_RANGE));
+    raw = round(c->dead_high + (map_entry_at(speed) * SERVO_RANGE));
   } else if (speed < 0) {
-    raw = round(c->dead_low - (servo_map[-speed] * SERVO_RANGE));
+    raw = round(c->dead_low - (map_entry_at(-speed) * SERVO_RANGE));
   } else {
     raw = c->midpoint;
   }

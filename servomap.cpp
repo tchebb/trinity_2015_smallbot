@@ -4,7 +4,11 @@
 
 #include "servomap.h"
 
-const double servo_map[] = {
+double map_entry_at(int index) {
+  return pgm_read_float_near(servo_map + index);
+}
+
+const PROGMEM double servo_map[] = {
   0.0,
   0.0,
   0.0,
